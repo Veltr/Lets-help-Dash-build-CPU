@@ -15,15 +15,34 @@
         </constraints>
         <properties/>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="e7cb2" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Label"/>
+            </properties>
+          </component>
+        </children>
       </grid>
       <scrollpane id="a7b68">
         <constraints>
           <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
-        <properties/>
+        <properties>
+          <enabled value="true"/>
+        </properties>
         <border type="none"/>
-        <children/>
+        <children>
+          <component id="ad262" class="javax.swing.JLabel">
+            <constraints/>
+            <properties>
+              <enabled value="true"/>
+              <text value="Label"/>
+            </properties>
+          </component>
+        </children>
       </scrollpane>
       <hspacer id="914ce">
         <constraints>

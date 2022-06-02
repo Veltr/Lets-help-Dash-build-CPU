@@ -1,4 +1,4 @@
-import windows.MainWindow;
+import gfx.windows.MainWindow;
 
 import java.awt.*;
 
