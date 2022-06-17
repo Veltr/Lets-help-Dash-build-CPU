@@ -6,16 +6,14 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainWindow extends JFrame {
-//    private JPanel _workspace;
-//    private JScrollPane _components;
-
     public MainWindow() {
         super("God, forgive me");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        setLayout(new GridLayout());
+        //add(new JButton("Run"));
         add(new Workspace());
-        // add(new ANDElement());
         // add(new ComponentsArea());
     }
 }
