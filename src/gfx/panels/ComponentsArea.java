@@ -14,7 +14,7 @@ public class ComponentsArea extends JScrollPane {
                 "Birthday Card List", "High School", "Country", "Continent",
                 "Planet" };
         JPanel p = new JPanel();
-        p.setSize(600, 400);
+        p.setSize(300, 200);
         p.setLayout(new GridLayout(13, 6, 10, 0));
         for (int row = 0; row < 13; row++) {
             ButtonGroup bg = new ButtonGroup();
