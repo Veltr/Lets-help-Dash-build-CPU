@@ -1,7 +1,6 @@
-package gfx.windows;
+package view.windows;
 
-import gfx.elements.*;
-import gfx.panels.*;
+import view.panels.*;
 import javax.swing.*;
 import java.awt.*;
 

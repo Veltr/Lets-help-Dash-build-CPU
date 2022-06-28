@@ -1,6 +1,6 @@
-package gfx.panels;
+package view.panels;
 
-import gfx.elements.*;
+import view.elements.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +17,7 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
         add(new ANDElement());
         setBackground(new Color(255, 255, 255));
         setBorder(BorderFactory.createLineBorder(Color.black));
+        setLayout(null);
         setVisible(true);
     }
 
@@ -24,8 +25,15 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
         e.addMouseListener(this);
         e.addMouseMotionListener(this);
         add((JComponent)e);
+        setPosition(e, 400, 300);
     }
 
+    public void setPosition(BaseElement e, int x, int y){
+        Dimension d = e.getPreferredSize();
+        e.setBounds(x - d.width / 2, y - d.height / 2, d.width, d.height);
+    }
+
+    //region Listener
     @Override
     public void mousePressed(MouseEvent e) {
         if(e.getSource() instanceof BaseElement) {
@@ -52,6 +60,7 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
             newLoc.x = Math.min(newLoc.x, _curElem.getParent().getWidth() - _curElem.getWidth());
             newLoc.y = Math.min(newLoc.y, _curElem.getParent().getHeight() - _curElem.getHeight());
             _curElem.setLocation(newLoc);
+            //_curElem.setBounds(newLoc.x, newLoc.y, _curElem.getWidth(), _curElem.getHeight());
             _start = loc;
         }
     }
@@ -65,4 +74,5 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
     @Override
     public void mouseExited(MouseEvent e) {}
 
+    //endregion
 }
