@@ -1,6 +1,8 @@
 package view.panels;
 
 import view.elements.*;
+import view.elements.logic.ANDElement;
+import view.elements.logic.ORElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +11,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 public class Workspace extends JPanel implements MouseListener, MouseMotionListener {
-    private BaseElement _curElem;
+    private BaseComponent _curElem;
     private Point _start;
     public Workspace(){
         super();
@@ -21,14 +23,14 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
         setVisible(true);
     }
 
-    public void add(BaseElement e){
+    public void add(BaseComponent e){
         e.addMouseListener(this);
         e.addMouseMotionListener(this);
         add((JComponent)e);
         setPosition(e, 400, 300);
     }
 
-    public void setPosition(BaseElement e, int x, int y){
+    public void setPosition(BaseComponent e, int x, int y){
         Dimension d = e.getPreferredSize();
         e.setBounds(x - d.width / 2, y - d.height / 2, d.width, d.height);
     }
@@ -36,8 +38,8 @@ public class Workspace extends JPanel implements MouseListener, MouseMotionListe
     //region Listener
     @Override
     public void mousePressed(MouseEvent e) {
-        if(e.getSource() instanceof BaseElement) {
-            _curElem = (BaseElement) e.getSource();
+        if(e.getSource() instanceof BaseComponent) {
+            _curElem = (BaseComponent) e.getSource();
             _start = SwingUtilities.convertPoint(_curElem, e.getPoint(), _curElem.getParent());
         }
     }

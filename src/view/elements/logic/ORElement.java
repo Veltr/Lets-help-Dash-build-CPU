@@ -1,6 +1,6 @@
-package view.elements;
+package view.elements.logic;
 
-public class ORElement extends BaseLogicElement {
+public class ORElement extends LogicElement {
     public ORElement(){
         super();
         getGFX("src/resources/data/OR.dat");

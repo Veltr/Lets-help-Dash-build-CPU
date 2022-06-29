@@ -1,40 +1,39 @@
 package view.panels;
 
+import view.elements.input.Lamp;
+import view.elements.logic.ANDElement;
+import view.elements.logic.IMPElement;
+import view.elements.logic.ORElement;
+import view.elements.logic.XORElement;
+import view.elements.output.Generator;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class ComponentsArea extends JScrollPane {
-    public  ComponentsArea(){
+    public ComponentsArea() {
         super();
-
-        JRadioButton[][] form = new JRadioButton[12][5];
-        String[] counts = { "", "0-1", "2-5", "6-10", "11-100", "101+" };
-        String[] categories = { "Household", "Office", "Extended Family",
-                "Company (US)", "Company (World)", "Team", "Will",
-                "Birthday Card List", "High School", "Country", "Continent",
-                "Planet" };
         JPanel p = new JPanel();
-        p.setSize(300, 200);
-        p.setLayout(new GridLayout(13, 6, 10, 0));
-        for (int row = 0; row < 13; row++) {
-            ButtonGroup bg = new ButtonGroup();
-            for (int col = 0; col < 6; col++) {
-                if (row == 0) {
-                    p.add(new JLabel(counts[col]));
-                } else {
-                    if (col == 0) {
-                        p.add(new JLabel(categories[row - 1]));
-                    } else {
-                        form[row - 1][col - 1] = new JRadioButton();
-                        bg.add(form[row - 1][col - 1]);
-                        p.add(form[row - 1][col - 1]);
-                    }
-                }
-            }
-        }
+        p.setBackground(new Color(255, 255, 255));
+        //p.setSize(300, 200);
+        p.setLayout(new GridLayout(3, 2, 10, 10));
+//        for (int row = 0; row < 4; row++) {
+//            for (int col = 0; col < 2; col++) {
+//                var t = new ANDElement();
+//                t.setFixedSize(128, 128);
+//                p.add(t);
+//            }
+//        }
+        p.add(new ANDElement());
+        p.add(new ORElement());
+        p.add(new XORElement());
+        p.add(new IMPElement());
+        p.add(new Generator());
+        p.add(new Lamp());
 
-        setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_ALWAYS);
-        setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
+        setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
+        getVerticalScrollBar().setUnitIncrement(16);
         setViewportView(p);
         setVisible(true);
     }

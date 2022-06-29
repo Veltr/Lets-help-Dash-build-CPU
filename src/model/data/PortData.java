@@ -1,19 +1,24 @@
 package model.data;
 
 public class PortData {
-    public enum BusType { B1, B8, B16 }
-    public PortData connect;
-    private BusType _type;
-    private ElementData _base;
+    private PortData _connection;
+    private final BusType _type;
+    private BaseElementData _base;
 
-    public PortData(){}
-
-    public PortData(ElementData base){
-        _base = base;
-    }
-
-    public PortData(BusType type, ElementData base){
+    public PortData(BusType type, BaseElementData base){
         _type = type;
         _base = base;
     }
+
+    public void connect(PortData e){
+        if(e.getType() == _type){
+            _connection = e;
+
+        }
+    }
+
+    public BusType getType(){ return _type; }
+    public PortData getConnection(){ return _connection; }
+
+    public enum BusType { B1, B8, B16 }
 }

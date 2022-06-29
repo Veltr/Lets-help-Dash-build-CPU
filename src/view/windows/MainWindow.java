@@ -12,7 +12,19 @@ public class MainWindow extends JFrame {
 
         setLayout(new GridLayout());
         //add(new JButton("Run"));
-        add(new Workspace());
-        // add(new ComponentsArea());
+        //add(new Workspace());
+        //add(new ComponentsArea());
+
+        var workspace = new Workspace();
+        var compArea = new ComponentsArea();
+
+        compArea.setMaximumSize(new Dimension(296, 1080));
+
+        var splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, workspace, compArea);
+        splitPane.setOneTouchExpandable(true);
+        splitPane.setDividerLocation(800-296);
+
+        splitPane.setResizeWeight(1.0);
+        add(splitPane);
     }
 }
