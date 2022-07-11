@@ -1,6 +1,7 @@
 package view.elements;
 
 import model.data.BaseElementData;
+import model.data.BusType;
 import model.data.PortData;
 
 import javax.swing.*;
@@ -14,17 +15,14 @@ import java.util.Scanner;
 public class BaseComponent extends JLabel implements MouseListener {
     protected BaseElementData _data;
     public BaseComponent(){ super(); }
-
     public void setFixedSize(int width, int height){
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
         setMaximumSize(new Dimension(width, height));
     }
-
     protected void setVisibleAllPorts(boolean b){
         for(var i : getComponents()) i.setVisible(b);
     }
-
     protected void getGFX(String filePath) {
         try(var file = new Scanner(new File(filePath))) {
             setIcon(new ImageIcon(file.nextLine()));
@@ -35,9 +33,9 @@ public class BaseComponent extends JLabel implements MouseListener {
                 int b = file.nextInt(),
                         x = file.nextInt(),
                         y = file.nextInt();
-                PortData.BusType t = PortData.BusType.B1;
-                if(b == 8) t = PortData.BusType.B8;
-                else if(b == 16) t = PortData.BusType.B16;
+                BusType t = BusType.B1;
+                if(b == 8) t = BusType.B8;
+                else if(b == 16) t = BusType.B16;
 
                 PortData cur = new PortData(t, _data);
                 //_data.inputPorts.add(cur);
@@ -52,9 +50,9 @@ public class BaseComponent extends JLabel implements MouseListener {
                 int b = file.nextInt(),
                         x = file.nextInt(),
                         y = file.nextInt();
-                PortData.BusType t = PortData.BusType.B1;
-                if(b == 8) t = PortData.BusType.B8;
-                else if(b == 16) t = PortData.BusType.B16;
+                BusType t = BusType.B1;
+                if(b == 8) t = BusType.B8;
+                else if(b == 16) t = BusType.B16;
 
                 PortData cur = new PortData(t, _data);
                 //_data.outputPorts.add(cur);

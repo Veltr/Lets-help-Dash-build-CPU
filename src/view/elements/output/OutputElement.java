@@ -9,7 +9,6 @@ import java.awt.*;
 public class OutputElement extends BaseComponent {
     public OutputElement() {
         super();
-        _data = new OutputElementData();
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(this);
     }

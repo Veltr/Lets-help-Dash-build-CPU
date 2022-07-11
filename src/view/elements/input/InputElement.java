@@ -9,7 +9,6 @@ import java.awt.*;
 public class InputElement extends BaseComponent {
     public InputElement() {
         super();
-        _data = new InputElementData();
         setBorder(BorderFactory.createLineBorder(Color.black));
         addMouseListener(this);
     }
