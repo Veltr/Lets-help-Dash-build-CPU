@@ -12,18 +12,15 @@ public class InputElementData extends BaseElementData {
     public InputElementData(int input){
         _inputPorts = new PortData[input];
         _inData = new WireData[input];
+
+        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, this);
     }
 
     @Override
-    public void add(PortData data, boolean isInput) {
-        for(int i = 0; i < _inputPorts.length; i++)
-            if(_inputPorts[i] == null){
-                data.index = i;
-                _inputPorts[i] = data;
-                break;
-            }
+    public void setPort(int index, PortData data, boolean isInput) {
+        _inputPorts[index].setAll(data);
     }
-    public void add(PortData data){ add(data, true); }
+    public void setPort(int index, PortData data){ setPort(index, data, true); }
 
     @Override
     public void execute() throws NullConnectionException, NotReadyException {

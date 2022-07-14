@@ -8,6 +8,8 @@ public class OutputElementData extends BaseElementData {
 
     public OutputElementData(int output){
         _outputPorts = new PortData[output];
+
+        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, this);
     }
 
     public void setOutputData(WireData data){
@@ -19,15 +21,10 @@ public class OutputElementData extends BaseElementData {
 
 
     @Override
-    public void add(PortData data, boolean isInput) {
-        for(int i = 0; i < _outputPorts.length; i++)
-            if(_outputPorts[i] == null){
-                data.index = i;
-                _outputPorts[i] = data;
-                break;
-            }
+    public void setPort(int index, PortData data, boolean isInput) {
+        _outputPorts[index].setAll(data);
     }
-    public void add(PortData data){ add(data, false); }
+    public void setPort(int index, PortData data){ setPort(index, data, true); }
 
     @Override
     public void execute(){}

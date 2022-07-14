@@ -10,6 +10,5 @@ public class LogicElement extends BaseComponent {
     public LogicElement() {
         super();
         setBorder(BorderFactory.createLineBorder(Color.black));
-        addMouseListener(this);
     }
 }

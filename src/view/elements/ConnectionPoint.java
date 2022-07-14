@@ -1,6 +1,7 @@
 package view.elements;
 
 import model.data.PortData;
+import view.staff.Wire;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,12 +9,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 public class ConnectionPoint extends JLabel implements MouseListener {
-    public PortData data;
-    public boolean isInput;
+    protected PortData _data;
+    protected boolean _isInput;
+    private Wire _wire;
+    //private Point _center;
 
     public ConnectionPoint(PortData data, boolean isInput){
-        this.data = data;
-        this.isInput = isInput;
+        _data = data;
+        _isInput = isInput;
 
         String path;
         if(isInput) path = "src/resources/sprites/Input.png";
@@ -29,6 +32,22 @@ public class ConnectionPoint extends JLabel implements MouseListener {
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
         setMaximumSize(new Dimension(width, height));
+    }
+    public Point getWorkspaceLocation(){
+        //if(_center != null) return _center;
+        var _center = getLocation();
+        _center.translate(getPreferredSize().width / 2, getPreferredSize().height / 2);
+        _center = SwingUtilities.convertPoint(getParent(), _center, getParent().getParent());
+        return _center;
+    }
+    public boolean connect(ConnectionPoint other){
+        return _data.connect(other._data);
+    }
+    public void setWire(Wire wire){
+        _wire = wire;
+    }
+    public Wire getWire(){
+        return _wire;
     }
 
     //region Listener

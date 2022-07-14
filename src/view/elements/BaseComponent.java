@@ -6,15 +6,16 @@ import model.data.PortData;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-public class BaseComponent extends JLabel implements MouseListener {
+public class BaseComponent extends JLabel {
     protected BaseElementData _data;
-    public BaseComponent(){ super(); }
+    public BaseComponent(){ super(); addMouseListener(new PortVisibleListener()); }
     public void setFixedSize(int width, int height){
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
@@ -38,8 +39,7 @@ public class BaseComponent extends JLabel implements MouseListener {
                 else if(b == 16) t = BusType.B16;
 
                 PortData cur = new PortData(t, _data);
-                //_data.inputPorts.add(cur);
-                _data.add(cur, true);
+                _data.setPort(i, cur, true);
                 var point = new ConnectionPoint(cur, true);
                 point.setBounds(x - 5, y - 10, 10, 10);
                 add(point);
@@ -55,8 +55,7 @@ public class BaseComponent extends JLabel implements MouseListener {
                 else if(b == 16) t = BusType.B16;
 
                 PortData cur = new PortData(t, _data);
-                //_data.outputPorts.add(cur);
-                _data.add(cur, false);
+                _data.setPort(i, cur, false);
                 var point = new ConnectionPoint(cur, false);
                 point.setBounds(x - 5, y, 10, 10);
                 add(point);
@@ -65,31 +64,24 @@ public class BaseComponent extends JLabel implements MouseListener {
             throw new RuntimeException(e);
         }
     }
-
-    //region Listener
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        System.out.println(e.getPoint());
+    public BaseElementData getElementData(){
+        return _data;
     }
+    
+    protected static class PortVisibleListener extends MouseAdapter {
+        public void mouseClicked(MouseEvent e) {
+            System.out.println(e.getPoint());
+        }
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            ((BaseComponent)e.getSource()).setVisibleAllPorts(true);
+            //System.out.println("Enter " + e.getSource());
+        }
 
-    @Override
-    public void mousePressed(MouseEvent e) {
+        @Override
+        public void mouseExited(MouseEvent e) {
+            ((BaseComponent)e.getSource()).setVisibleAllPorts(false);
+            //System.out.println("Exit  " + e.getSource());
+        }
     }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        ((BaseComponent)e.getSource()).setVisibleAllPorts(true);
-        //System.out.println("Enter " + e.getSource());
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        ((BaseComponent)e.getSource()).setVisibleAllPorts(false);
-        //System.out.println("Exit  " + e.getSource());
-    }
-    //endregion
 }

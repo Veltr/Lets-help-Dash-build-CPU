@@ -10,6 +10,5 @@ public class InputElement extends BaseComponent {
     public InputElement() {
         super();
         setBorder(BorderFactory.createLineBorder(Color.black));
-        addMouseListener(this);
     }
 }

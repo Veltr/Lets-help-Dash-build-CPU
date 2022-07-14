@@ -18,7 +18,6 @@ public class Main {
         OutputElementData[] gens = new OutputElementData[2];
         for(int i = 0; i < gens.length; i++){
             gens[i] = new OutputElementData(1);
-            gens[i].add(new PortData(BusType.B1, gens[i]));
 
             circuit.add(gens[i]);
         }
@@ -31,14 +30,10 @@ public class Main {
             out[0] = new WireData(a[0].getType(), a[0].getValue() & a[1].getValue());
             return out;
         });
-        element.add(new PortData(BusType.B1, element), true);
-        element.add(new PortData(BusType.B1, element), true);
-        element.add(new PortData(BusType.B1, element), false);
         circuit.add(element);
 
 
         InputElementData lamp = new InputElementData(1);
-        lamp.add(new PortData(BusType.B1, lamp));
         circuit.add(lamp);
 
 
@@ -50,7 +45,7 @@ public class Main {
         circuit.start();
     }
     public static void main(String[] args) {
-        //viewTest();
-        modelTest();
+        viewTest();
+        //modelTest();
     }
 }

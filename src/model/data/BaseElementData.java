@@ -1,13 +1,12 @@
 package model.data;
 
-import model.exceptions.CircuitException;
 import model.exceptions.NotReadyException;
 import model.exceptions.NullConnectionException;
 
 import java.util.AbstractCollection;
 
 public abstract class BaseElementData {
-    public abstract void add(PortData data, boolean isInput);
+    public abstract void setPort(int index, PortData data, boolean isInput);
     public abstract void execute() throws NullConnectionException, NotReadyException;
     protected abstract WireData getPortData(int index);
     protected abstract void addNextElements(AbstractCollection<BaseElementData> out);

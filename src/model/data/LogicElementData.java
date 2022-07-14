@@ -20,6 +20,9 @@ public class LogicElementData extends BaseElementData {
         _outData = new WireData[output];
 
         _action = action;
+
+        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, this);
+        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, this);
     }
 
     protected void clearForBfs(){
@@ -27,17 +30,9 @@ public class LogicElementData extends BaseElementData {
     }
 
     @Override
-    public void add(PortData data, boolean isInput) {
-        PortData[] arr;
-        if(isInput) arr = _inputPorts;
-        else arr = _outputPorts;
-
-        for(int i = 0; i < arr.length; i++)
-            if(arr[i] == null){
-                data.index = i;
-                arr[i] = data;
-                break;
-            }
+    public void setPort(int index, PortData data, boolean isInput) {
+        if(isInput) _inputPorts[index].setAll(data);
+        else _outputPorts[index].setAll(data);
     }
 
     @Override
