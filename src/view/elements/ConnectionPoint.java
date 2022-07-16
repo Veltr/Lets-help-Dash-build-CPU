@@ -12,7 +12,6 @@ public class ConnectionPoint extends JLabel implements MouseListener {
     protected PortData _data;
     protected boolean _isInput;
     private Wire _wire;
-    //private Point _center;
 
     public ConnectionPoint(PortData data, boolean isInput){
         _data = data;
@@ -49,11 +48,17 @@ public class ConnectionPoint extends JLabel implements MouseListener {
     public Wire getWire(){
         return _wire;
     }
+    public boolean isInput() {
+        return _isInput;
+    }
+    public int getIndex() {
+        return _data.getIndex();
+    }
 
     //region Listener
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println(e.getPoint());
+        //System.out.println(e.getPoint());
     }
 
     @Override

@@ -1,5 +1,7 @@
 # Data format
-1'st line - image path
+1'st line - 1 int - number of images
+
+N lines - image path(es)
 
 1 int - input ports number, input ports, 1 int - output ports number, output
 

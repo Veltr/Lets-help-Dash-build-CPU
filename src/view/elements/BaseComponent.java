@@ -3,19 +3,23 @@ package view.elements;
 import model.data.BaseElementData;
 import model.data.BusType;
 import model.data.PortData;
+import view.staff.Wire;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-public class BaseComponent extends JLabel {
+public abstract class BaseComponent extends JLabel {
     protected BaseElementData _data;
-    public BaseComponent(){ super(); addMouseListener(new PortVisibleListener()); }
+    protected ArrayList<ImageIcon> _icons = new ArrayList<>();
+    private final ArrayList<ConnectionPoint> _inputPorts = new ArrayList<>();
+    private final ArrayList<ConnectionPoint> _outputPorts = new ArrayList<>();
+
+    public BaseComponent(){ super(); addMouseListener(new BaseComponentListener()); }
     public void setFixedSize(int width, int height){
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
@@ -26,10 +30,14 @@ public class BaseComponent extends JLabel {
     }
     protected void getGFX(String filePath) {
         try(var file = new Scanner(new File(filePath))) {
-            setIcon(new ImageIcon(file.nextLine()));
+            int n = file.nextInt(); file.nextLine();
+            for(int i = 0; i < n; i++)
+                _icons.add(new ImageIcon(file.nextLine()));
+
+            setIcon(_icons.get(0));
             setFixedSize(128, 128);
 
-            int n = file.nextInt();
+            n = file.nextInt();
             for(int i = 0; i < n; i++){
                 int b = file.nextInt(),
                         x = file.nextInt(),
@@ -38,11 +46,11 @@ public class BaseComponent extends JLabel {
                 if(b == 8) t = BusType.B8;
                 else if(b == 16) t = BusType.B16;
 
-                PortData cur = new PortData(t, _data);
-                _data.setPort(i, cur, true);
-                var point = new ConnectionPoint(cur, true);
+                _data.setPort(i, new PortData(t, i, _data), true);
+                var point = new ConnectionPoint(_data.getPortData(i, true), true);
                 point.setBounds(x - 5, y - 10, 10, 10);
                 add(point);
+                _inputPorts.add(point);
             }
 
             n = file.nextInt();
@@ -54,11 +62,11 @@ public class BaseComponent extends JLabel {
                 if(b == 8) t = BusType.B8;
                 else if(b == 16) t = BusType.B16;
 
-                PortData cur = new PortData(t, _data);
-                _data.setPort(i, cur, false);
-                var point = new ConnectionPoint(cur, false);
+                _data.setPort(i, new PortData(t, i, _data), false);
+                var point = new ConnectionPoint(_data.getPortData(i, false), false);
                 point.setBounds(x - 5, y, 10, 10);
                 add(point);
+                _outputPorts.add(point);
             }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -67,11 +75,30 @@ public class BaseComponent extends JLabel {
     public BaseElementData getElementData(){
         return _data;
     }
-    
-    protected static class PortVisibleListener extends MouseAdapter {
-        public void mouseClicked(MouseEvent e) {
-            System.out.println(e.getPoint());
-        }
+    public void delete(){
+        // TODO
+    }
+    public void writeToFile(DataOutputStream file) throws IOException {
+        var name = getClass().getName().split("\\.", 3);
+        file.writeUTF(name[2]);
+
+        var location = getBounds();
+        file.writeInt(location.x); file.writeInt(location.y);
+        file.writeInt(location.width); file.writeInt(location.height);
+    }
+    public Wire[] getAllWires(){
+        Wire[] out = new Wire[getComponentCount()];
+        int n = 0;
+        for(var i : getComponents()) out[n++] = ((ConnectionPoint)i).getWire();
+        return out;
+    }
+    public Wire connect(BaseComponent to, int outputPortIndex, int inputPortIndex) {
+        _data.connect(to._data, outputPortIndex, inputPortIndex);
+        Wire wire = new Wire(_outputPorts.get(outputPortIndex));
+        wire.setEndPoint(to._inputPorts.get(inputPortIndex));
+        return wire;
+    }
+    protected static class BaseComponentListener extends MouseAdapter {
         @Override
         public void mouseEntered(MouseEvent e) {
             ((BaseComponent)e.getSource()).setVisibleAllPorts(true);

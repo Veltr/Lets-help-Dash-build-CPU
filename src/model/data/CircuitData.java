@@ -30,6 +30,11 @@ public class CircuitData {
         for(var i : _elements) if(i instanceof LogicElementData) ((LogicElementData)i).clearForBfs();
     }
 
+    public void clear(){
+        _elements.clear();
+        _generators.clear();
+    }
+
     private void bfs(){
         while (_bfsQueue.size() > 0){
             var cur = _bfsQueue.pollFirst();

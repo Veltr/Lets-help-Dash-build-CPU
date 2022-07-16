@@ -21,8 +21,8 @@ public class LogicElementData extends BaseElementData {
 
         _action = action;
 
-        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, this);
-        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, this);
+        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, i, this);
+        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, i, this);
     }
 
     protected void clearForBfs(){
@@ -45,7 +45,7 @@ public class LogicElementData extends BaseElementData {
     }
 
     @Override
-    protected WireData getPortData(int index) {
+    protected WireData getDataFromPort(int index) {
         if(!_outputReady) return null;
         return _outData[index];
     }
@@ -57,11 +57,11 @@ public class LogicElementData extends BaseElementData {
 
     @Override
     public void connect(BaseElementData to, int outputPortIndex, int inputPortIndex) {
-        _outputPorts[outputPortIndex].connect(to.getPort(inputPortIndex, true));
+        _outputPorts[outputPortIndex].connect(to.getPortData(inputPortIndex, true));
     }
 
     @Override
-    protected PortData getPort(int index, boolean isInput) {
+    public PortData getPortData(int index, boolean isInput) {
         if(isInput) return _inputPorts[index];
         else return _outputPorts[index];
     }

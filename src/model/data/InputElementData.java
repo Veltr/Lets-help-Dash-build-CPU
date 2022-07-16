@@ -13,7 +13,11 @@ public class InputElementData extends BaseElementData {
         _inputPorts = new PortData[input];
         _inData = new WireData[input];
 
-        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, this);
+        for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, i, this);
+    }
+
+    public WireData[] getData(){
+        return _inData;
     }
 
     @Override
@@ -31,7 +35,7 @@ public class InputElementData extends BaseElementData {
     }
 
     @Override
-    protected WireData getPortData(int index) { return null; }
+    protected WireData getDataFromPort(int index) { return null; }
 
     @Override
     protected void addNextElements(AbstractCollection<BaseElementData> out){}
@@ -40,7 +44,7 @@ public class InputElementData extends BaseElementData {
     public void connect(BaseElementData to, int outputPortIndex, int inputPortIndex){}
 
     @Override
-    public PortData getPort(int index, boolean isInput) {
+    public PortData getPortData(int index, boolean isInput) {
         return _inputPorts[index];
     }
 }

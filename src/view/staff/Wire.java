@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 
 public class Wire {
-    private final ConnectionPoint _startPoint;
+    private ConnectionPoint _startPoint;
     private ConnectionPoint _endPoint;
     private final Line2D _line;
     private final Color _color;
@@ -36,8 +36,14 @@ public class Wire {
     }
 
     public void setEndPoint(ConnectionPoint endPoint){
-        _endPoint = endPoint;
+        if(!endPoint.isInput()){
+            _endPoint = _startPoint;
+            _startPoint = endPoint;
+        }
+        else _endPoint = endPoint;
         _startPoint.setWire(this);
         _endPoint.setWire(this);
     }
+    public ConnectionPoint getStartPoint() { return _startPoint; }
+    public ConnectionPoint getEndPoint() { return _endPoint; }
 }

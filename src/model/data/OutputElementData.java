@@ -9,11 +9,14 @@ public class OutputElementData extends BaseElementData {
     public OutputElementData(int output){
         _outputPorts = new PortData[output];
 
-        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, this);
+        for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, i, this);
     }
 
     public void setOutputData(WireData data){
         _outData = data;
+    }
+    public void setOutputData(int value){
+        _outData.setValue(value);
     }
     public WireData getOutputData(){
         return _outData;
@@ -30,7 +33,7 @@ public class OutputElementData extends BaseElementData {
     public void execute(){}
 
     @Override
-    protected WireData getPortData(int index) {
+    protected WireData getDataFromPort(int index) {
         return _outData;
     }
 
@@ -41,11 +44,11 @@ public class OutputElementData extends BaseElementData {
 
     @Override
     public void connect(BaseElementData to, int outputPortIndex, int inputPortIndex) {
-        _outputPorts[outputPortIndex].connect(to.getPort(inputPortIndex, true));
+        _outputPorts[outputPortIndex].connect(to.getPortData(inputPortIndex, true));
     }
 
     @Override
-    protected PortData getPort(int index, boolean isInput) {
+    public PortData getPortData(int index, boolean isInput) {
         return _outputPorts[index];
     }
 }

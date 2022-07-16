@@ -3,17 +3,19 @@ package model.data;
 import model.exceptions.NullConnectionException;
 
 public class PortData {
-    public int index;
+    private int _index;
     private PortData _connection;
     private BusType _type;
     private BaseElementData _base;
 
-    public PortData(BusType type, BaseElementData base){
+    public PortData(BusType type, int index, BaseElementData base){
         _type = type;
+        _index = index;
         _base = base;
     }
-    public PortData(BusType type){
+    public PortData(BusType type, int index){
         _type = type;
+        _index = index;
         _base = null;
     }
 
@@ -32,10 +34,11 @@ public class PortData {
     }
 
     private WireData getOutputData(){
-        return _base.getPortData(index);
+        return _base.getDataFromPort(_index);
     }
 
     public BusType getType(){ return _type; }
+    public int getIndex(){ return _index; }
     public BaseElementData getConnectionBase(){ return _connection._base; }
     protected void setAll(PortData other){
         _type = other._type;

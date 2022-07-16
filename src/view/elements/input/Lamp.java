@@ -9,4 +9,10 @@ public class Lamp extends InputElement {
         getGFX("src/resources/data/LAMP.dat");
         setVisibleAllPorts(false);
     }
+
+    @Override
+    public void setState(){
+        _curValue = ((InputElementData)_data).getData()[0].getValue();
+        setIcon(_icons.get(_curValue));
+    }
 }

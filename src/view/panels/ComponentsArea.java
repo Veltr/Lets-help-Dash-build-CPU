@@ -1,16 +1,16 @@
 package view.panels;
 
-import view.elements.input.Lamp;
 import view.elements.logic.ANDElement;
-import view.elements.logic.IMPElement;
 import view.elements.logic.ORElement;
-import view.elements.logic.XORElement;
-import view.elements.output.Generator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ComponentsArea extends JScrollPane {
+    public Workspace workspace;
+    private final ComponentAreaListener _listener = new ComponentAreaListener();
     public ComponentsArea() {
         super();
         JPanel p = new JPanel();
@@ -24,17 +24,37 @@ public class ComponentsArea extends JScrollPane {
 //                p.add(t);
 //            }
 //        }
-        p.add(new ANDElement());
+        /*p.add(new ANDElement());
         p.add(new ORElement());
         p.add(new XORElement());
         p.add(new IMPElement());
-        p.add(new Generator());
-        p.add(new Lamp());
+        p.add(new GeneratorB1());
+        p.add(new Lamp());*/
+
+        p.add(new Element<ANDElement>(new ImageIcon("src/resources/sprites/AND.png")));
+        p.add(new Element<ORElement>(new ImageIcon("src/resources/sprites/OR.png")));
 
         setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
         getVerticalScrollBar().setUnitIncrement(16);
         setViewportView(p);
         setVisible(true);
+    }
+
+    private class Element<T> extends JLabel {
+        public T link;
+        public Element(ImageIcon icon){
+            setIcon(icon);
+            setBorder(BorderFactory.createLineBorder(Color.black));
+        }
+    }
+    private static class ComponentAreaListener extends MouseAdapter {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            if(e.getSource() instanceof Element<?>){
+
+            }
+
+        }
     }
 }

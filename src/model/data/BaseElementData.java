@@ -8,8 +8,8 @@ import java.util.AbstractCollection;
 public abstract class BaseElementData {
     public abstract void setPort(int index, PortData data, boolean isInput);
     public abstract void execute() throws NullConnectionException, NotReadyException;
-    protected abstract WireData getPortData(int index);
+    protected abstract WireData getDataFromPort(int index);
     protected abstract void addNextElements(AbstractCollection<BaseElementData> out);
     public abstract void connect(BaseElementData to, int outputPortIndex, int inputPortIndex);
-    protected abstract PortData getPort(int index, boolean isInput);
+    public abstract PortData getPortData(int index, boolean isInput);
 }
