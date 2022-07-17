@@ -22,6 +22,11 @@ public class CircuitData {
         else _elements.add(data);
     }
 
+    public void remove(BaseElementData data){
+        if(data instanceof OutputElementData) _generators.remove((OutputElementData) data);
+        else _elements.remove(data);
+    }
+
     public void start(){
         _bfsQueue.clear();
         _bfsQueue.addAll(_generators);

@@ -54,11 +54,16 @@ public class ConnectionPoint extends JLabel implements MouseListener {
     public int getIndex() {
         return _data.getIndex();
     }
+    public void disconnect(){
+        _data.disconnect();
+        if(_wire != null) _wire.disconnect();
+        getParent().getParent().repaint();
+    }
 
     //region Listener
     @Override
     public void mouseClicked(MouseEvent e) {
-        //System.out.println(e.getPoint());
+        if(e.getButton() == MouseEvent.BUTTON3) disconnect();
     }
 
     @Override

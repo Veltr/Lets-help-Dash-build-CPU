@@ -1,8 +1,9 @@
-package view.elements.output;
+package view.elements.output.B1;
 
 import model.data.BusType;
 import model.data.OutputElementData;
 import model.data.WireData;
+import view.elements.output.OutputElement;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

@@ -19,11 +19,13 @@ public class Wire {
         _stroke = new BasicStroke(5);
     }
 
-    public void drawIt(Graphics g){
+    public boolean drawIt(Graphics g){
+        if(_startPoint == null) return false;
         Graphics2D g2 = (Graphics2D) g;
         g.setColor(_color);
         g2.setStroke(_stroke);
         g2.draw(getLine());
+        return true;
     }
 
     public void moveLine(Point p){
@@ -46,4 +48,10 @@ public class Wire {
     }
     public ConnectionPoint getStartPoint() { return _startPoint; }
     public ConnectionPoint getEndPoint() { return _endPoint; }
+    public void disconnect(){
+        _startPoint.setWire(null);
+        _endPoint.setWire(null);
+        _startPoint = null;
+        _endPoint = null;
+    }
 }

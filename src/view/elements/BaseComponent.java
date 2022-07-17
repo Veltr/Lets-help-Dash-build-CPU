@@ -3,6 +3,7 @@ package view.elements;
 import model.data.BaseElementData;
 import model.data.BusType;
 import model.data.PortData;
+import view.panels.Workspace;
 import view.staff.Wire;
 
 import javax.swing.*;
@@ -76,7 +77,8 @@ public abstract class BaseComponent extends JLabel {
         return _data;
     }
     public void delete(){
-        // TODO
+        for(var i : getComponents()) ((ConnectionPoint)i).disconnect();
+        getParent().remove(this);
     }
     public void writeToFile(DataOutputStream file) throws IOException {
         var name = getClass().getName().split("\\.", 3);
@@ -86,10 +88,10 @@ public abstract class BaseComponent extends JLabel {
         file.writeInt(location.x); file.writeInt(location.y);
         file.writeInt(location.width); file.writeInt(location.height);
     }
-    public Wire[] getAllWires(){
-        Wire[] out = new Wire[getComponentCount()];
-        int n = 0;
-        for(var i : getComponents()) out[n++] = ((ConnectionPoint)i).getWire();
+    public ArrayList<Wire> getAllWires(){
+        ArrayList<Wire> out = new ArrayList<>();
+        for(var i : getComponents())
+            if(((ConnectionPoint)i).getWire() != null) out.add(((ConnectionPoint)i).getWire());
         return out;
     }
     public Wire connect(BaseComponent to, int outputPortIndex, int inputPortIndex) {

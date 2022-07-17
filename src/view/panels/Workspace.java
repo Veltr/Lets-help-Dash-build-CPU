@@ -3,14 +3,12 @@ package view.panels;
 import model.data.CircuitData;
 import view.elements.*;
 import view.elements.input.InputElement;
-import view.elements.logic.ANDElement;
 import view.staff.Wire;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -23,10 +21,13 @@ public class Workspace extends JScrollPane {
         setViewportView(_view);
         _view.scrollRectToVisible(new Rectangle((getPreferredSize().width - 500) / 2, (getPreferredSize().height - 500) / 2, 1, 1));
         getVerticalScrollBar().setUnitIncrement(16);
+        getHorizontalScrollBar().setUnitIncrement(16);
     }
 
     public void add(BaseComponent e) {
         _view.add(e);
+        Rectangle r = getViewport().getViewRect();
+        setPosition(e, r.x + r.width / 2, r.y + r.height / 2);
     }
     public void setPosition(BaseComponent e, int x, int y) { _view.setPosition(e, x, y); }
     public void run(){
@@ -39,7 +40,7 @@ public class Workspace extends JScrollPane {
         clearAll();
         _view.load(path);
     }
-    protected void clearAll(){
+    public void clearAll(){
         _view.clearAll();
         repaint();
     }
@@ -83,7 +84,8 @@ class WorkspaceView extends JPanel {
         }
 
         add((JComponent)e);
-        setPosition(e, getPreferredSize().width / 2, getPreferredSize().height / 2);
+        //setPosition(e, getPreferredSize().width / 2, getPreferredSize().height / 2);
+        //setPosition(e, (getPreferredSize().width - getSize().width) / 2, (getPreferredSize().height - getSize().height) / 2);
         _circuit.add(e.getElementData());
     }
 
@@ -122,7 +124,6 @@ class WorkspaceView extends JPanel {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Saved");
     }
 
     protected void load(String path){
@@ -147,7 +148,6 @@ class WorkspaceView extends JPanel {
                IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Loaded");
     }
     protected void run(){
         _circuit.start();
@@ -158,8 +158,13 @@ class WorkspaceView extends JPanel {
         _lineDrag.getWires().clear();
         removeAll();
     }
-    private void deleteElement(){
 
+    @Override
+    public void remove(Component comp) {
+        super.remove(comp);
+        if(comp instanceof BaseComponent){
+            _circuit.remove(((BaseComponent)comp).getElementData());
+        }
     }
 
     @Override
@@ -171,7 +176,8 @@ class WorkspaceView extends JPanel {
     protected void paintChildren(Graphics g) {
         super.paintChildren(g);
 
-        for(var i : _lineDrag.getWires()) i.drawIt(g);
+        //for(var i : _lineDrag.getWires()) i.drawIt(g);
+        _lineDrag.getWires().removeIf(cur -> !cur.drawIt(g));
     }
 
     private static class ElementDrag extends MouseAdapter {
@@ -221,7 +227,7 @@ class WorkspaceView extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if(e.getSource() instanceof ConnectionPoint point) {
+            if(e.getButton() == MouseEvent.BUTTON1 && e.getSource() instanceof ConnectionPoint point) {
                 if(_isDragging){
                     if(point == _curPoint || point.getParent() == _curPoint.getParent()) endDrag(false);
                     else {

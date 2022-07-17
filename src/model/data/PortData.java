@@ -27,6 +27,12 @@ public class PortData {
         }
         return false;
     }
+    public void disconnect(){
+        if(_connection == null) return;
+        var t = _connection;
+        _connection = null;
+        t.disconnect();
+    }
 
     public WireData getData() throws NullConnectionException {
         if(_connection == null) throw new NullConnectionException(_base, this);

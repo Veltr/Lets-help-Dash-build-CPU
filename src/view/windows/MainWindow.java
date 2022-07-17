@@ -1,22 +1,16 @@
 package view.windows;
 
 import view.elements.BaseComponent;
-import view.elements.input.Lamp;
-import view.elements.logic.ANDElement;
-import view.elements.logic.IMPElement;
-import view.elements.logic.ORElement;
-import view.elements.logic.XORElement;
-import view.elements.output.GeneratorB1;
+import view.elements.input.B1.Lamp;
+import view.elements.logic.*;
+import view.elements.output.B1.GeneratorB1;
 import view.panels.*;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.regex.Pattern;
 
 public class MainWindow extends JFrame {
-    private boolean _isRunning = false;
     private final Workspace _workspace;
     private String _curFile;
     private final String _title = "God, forgive me";
@@ -44,7 +38,6 @@ public class MainWindow extends JFrame {
     }
 
     public void run(){
-        _isRunning = true;
         _workspace.run();
     }
     public void save(){
@@ -57,7 +50,8 @@ public class MainWindow extends JFrame {
             ch.setSelectedFile(new File("Без имени." + _extension));
             if (ch.showSaveDialog(this) == JFileChooser.APPROVE_OPTION ) {
                 _curFile = ch.getSelectedFile().getAbsolutePath();
-                JOptionPane.showMessageDialog(this, "Файл '" + _curFile + " сохранен");
+                var s = _curFile.split(Pattern.quote(System.getProperty("file.separator")));
+                JOptionPane.showMessageDialog(this, "Файл " + s[s.length - 1] + " сохранен");
                 changeTitle();
             }
             else return;
@@ -74,6 +68,14 @@ public class MainWindow extends JFrame {
             _workspace.load(_curFile = ch.getSelectedFile().getAbsolutePath());
             changeTitle();
         }
+    }
+    public void reload(){
+        if(_curFile != null) _workspace.load(_curFile);
+    }
+    public void newCircuit(){
+        _curFile = null;
+        _workspace.clearAll();
+        changeTitle();
     }
     private void add(BaseComponent e){
         _workspace.add(e);
@@ -96,18 +98,28 @@ public class MainWindow extends JFrame {
 
         private JMenu createFileMenu() {
             JMenu file = new JMenu("Файл");
+            JMenuItem newC = new JMenuItem("Новая схема");
             JMenuItem open = new JMenuItem("Открыть");
+            JMenuItem reload = new JMenuItem("Перезагрузить");
             JMenuItem save = new JMenuItem("Сохранить");
             JMenuItem exit = new JMenuItem("Выход");
+
+            file.add(newC);
             file.add(open);
+            file.add(reload);
             file.add(save);
             file.addSeparator();
             file.add(exit);
 
+            newC.addActionListener(e -> newCircuit());
+            newC.setAccelerator(KeyStroke.getKeyStroke("control N"));
             open.addActionListener(e -> load());
-            exit.addActionListener(e -> System.exit(0));
+            open.setAccelerator(KeyStroke.getKeyStroke("control O"));
+            reload.addActionListener(e -> reload());
+            reload.setAccelerator(KeyStroke.getKeyStroke("control shift R"));
             save.addActionListener(e -> save());
             save.setAccelerator(KeyStroke.getKeyStroke("control S"));
+            exit.addActionListener(e -> System.exit(0));
             return file;
         }
         private JMenu createViewMenu() {
@@ -116,12 +128,10 @@ public class MainWindow extends JFrame {
             JMenuItem runItem = new JMenuItem("Запустить");
             viewMenu.add(runItem);
 
-            runItem.addActionListener(e -> {
-                run();
-            });
+            runItem.addActionListener(e -> run());
+            runItem.setAccelerator(KeyStroke.getKeyStroke("control R"));
             return viewMenu;
         }
-
         private JMenu createComponentsMenu(){
             JMenu m0 = new JMenu("Компоненты");
 
@@ -132,7 +142,9 @@ public class MainWindow extends JFrame {
             m[k] = new JMenu("Входные");
 
             int n = 0; k = 0;
-            JMenuItem[] i1 = new JMenuItem[4];
+            JMenuItem[] i1 = new JMenuItem[5];
+            i1[n] = new JMenuItem("NOT");
+            i1[n++].addActionListener(e -> MainWindow.this.add(new NOTElement()));
             i1[n] = new JMenuItem("AND");
             i1[n++].addActionListener(e -> MainWindow.this.add(new ANDElement()));
             i1[n] = new JMenuItem("OR");

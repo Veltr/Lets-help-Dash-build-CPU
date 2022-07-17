@@ -41,7 +41,6 @@ public class LogicElementData extends BaseElementData {
             if((_inData[i] = _inputPorts[i].getData()) == null) throw new NotReadyException();
 
         _outData = _action.execute(_inData);
-        _outputReady = true;
     }
 
     @Override
@@ -52,6 +51,8 @@ public class LogicElementData extends BaseElementData {
 
     @Override
     public void addNextElements(AbstractCollection<BaseElementData> out) {
+        if(_outputReady) return;
+        _outputReady = true;
         for(var i : _outputPorts) out.add(i.getConnectionBase());
     }
 

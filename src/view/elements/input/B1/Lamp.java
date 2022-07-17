@@ -1,6 +1,7 @@
-package view.elements.input;
+package view.elements.input.B1;
 
 import model.data.InputElementData;
+import view.elements.input.InputElement;
 
 public class Lamp extends InputElement {
     public Lamp(){
