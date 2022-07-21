@@ -94,6 +94,13 @@ public abstract class BaseComponent extends JLabel {
             if(((ConnectionPoint)i).getWire() != null) out.add(((ConnectionPoint)i).getWire());
         return out;
     }
+    public String getMessageForError(PortData data){
+        StringBuilder sb = new StringBuilder();
+        if( _inputPorts.size() > data.getIndex() && _inputPorts.get(data.getIndex())._data == data) sb.append("Входной ");
+        else if( _outputPorts.size() > data.getIndex() && _outputPorts.get(data.getIndex())._data == data) sb.append("Выходной ");
+        sb.append(String.format("порт #%d не соединен", data.getIndex()));
+        return sb.toString();
+    }
     public Wire connect(BaseComponent to, int outputPortIndex, int inputPortIndex) {
         _data.connect(to._data, outputPortIndex, inputPortIndex);
         Wire wire = new Wire(_outputPorts.get(outputPortIndex));

@@ -20,19 +20,6 @@ public class ComponentsArea extends JScrollPane {
         p.setBackground(new Color(255, 255, 255));
         //p.setSize(300, 200);
         p.setLayout(new GridLayout(4, 2, 10, 10));
-//        for (int row = 0; row < 4; row++) {
-//            for (int col = 0; col < 2; col++) {
-//                var t = new ANDElement();
-//                t.setFixedSize(128, 128);
-//                p.add(t);
-//            }
-//        }
-        /*p.add(new ANDElement());
-        p.add(new ORElement());
-        p.add(new XORElement());
-        p.add(new IMPElement());
-        p.add(new GeneratorB1());
-        p.add(new Lamp());*/
 
         p.add(new Element(new NOTElement(), new ImageIcon("src/resources/sprites/NOT.png")));
         p.add(new Element(new ANDElement(), new ImageIcon("src/resources/sprites/AND.png")));

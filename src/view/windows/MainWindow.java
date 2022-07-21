@@ -1,20 +1,19 @@
 package view.windows;
 
+import io.FileSaver;
 import view.elements.BaseComponent;
 import view.elements.input.B1.Lamp;
 import view.elements.logic.*;
 import view.elements.output.B1.GeneratorB1;
 import view.panels.*;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 import java.util.regex.Pattern;
 
 public class MainWindow extends JFrame {
     private final Workspace _workspace;
     private String _curFile;
-    private final String _title = "God, forgive me";
-    private final String _extension = "gfm";
+    private final String _title = "Logic builder";
+    private final String _extension = "circ";
     public MainWindow() {
         super();
         changeTitle();
@@ -42,14 +41,7 @@ public class MainWindow extends JFrame {
     }
     public void save(){
         if(_curFile == null){
-            JFileChooser ch = new JFileChooser();
-            ch.setDialogTitle("Сохранение файла");
-            ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            ch.setFileFilter(new FileNameExtensionFilter(_title,_extension));
-            ch.setCurrentDirectory(new File(System.getProperty("user.dir")));
-            ch.setSelectedFile(new File("Без имени." + _extension));
-            if (ch.showSaveDialog(this) == JFileChooser.APPROVE_OPTION ) {
-                _curFile = ch.getSelectedFile().getAbsolutePath();
+            if((_curFile = FileSaver.save(this)) != null) {
                 var s = _curFile.split(Pattern.quote(System.getProperty("file.separator")));
                 JOptionPane.showMessageDialog(this, "Файл " + s[s.length - 1] + " сохранен");
                 changeTitle();
@@ -59,13 +51,10 @@ public class MainWindow extends JFrame {
         _workspace.save(_curFile);
     }
     public void load(){
-        JFileChooser ch = new JFileChooser();
-        ch.setDialogTitle("Загрузка файла");
-        ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        ch.setFileFilter(new FileNameExtensionFilter(_title,_extension));
-        ch.setCurrentDirectory(new File(System.getProperty("user.dir")));
-        if (ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION ) {
-            _workspace.load(_curFile = ch.getSelectedFile().getAbsolutePath());
+        String s = FileSaver.load(this);
+        if (s != null) {
+            _curFile = s;
+            _workspace.load(_curFile);
             changeTitle();
         }
     }
@@ -81,11 +70,7 @@ public class MainWindow extends JFrame {
         _workspace.add(e);
     }
     private void changeTitle(){
-        if(_curFile == null) setTitle("untitled - " + _title);
-        else {
-            var s = _curFile.split(Pattern.quote(System.getProperty("file.separator")));
-            setTitle(s[s.length - 1].split("\\.")[0] + " - " + _title);
-        }
+        setTitle(FileSaver.getTitle(_curFile));
     }
 
     private class MainMenu extends JMenuBar {

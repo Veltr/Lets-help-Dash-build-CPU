@@ -7,16 +7,16 @@ import java.util.AbstractCollection;
 
 public class InputElementData extends BaseElementData {
     private final PortData[] _inputPorts;
-    private final WireData[] _inData;
+    private final SignalData[] _inData;
 
     public InputElementData(int input){
         _inputPorts = new PortData[input];
-        _inData = new WireData[input];
+        _inData = new SignalData[input];
 
         for(int i = 0; i < input; i++) _inputPorts[i] = new PortData(BusType.B1, i, this);
     }
 
-    public WireData[] getData(){
+    public SignalData[] getData(){
         return _inData;
     }
 
@@ -31,11 +31,11 @@ public class InputElementData extends BaseElementData {
         for(int i = 0; i < _inputPorts.length; i++)
             if((_inData[i] = _inputPorts[i].getData()) == null) throw new NotReadyException();
 
-        System.out.printf("Hello there, it's %d\n", _inData[0].getValue());
+        //System.out.printf("Hello there, it's %d\n", _inData[0].getValue());
     }
 
     @Override
-    protected WireData getDataFromPort(int index) { return null; }
+    protected SignalData getDataFromPort(int index) { return null; }
 
     @Override
     protected void addNextElements(AbstractCollection<BaseElementData> out){}

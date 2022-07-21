@@ -8,16 +8,16 @@ import java.util.AbstractCollection;
 public class LogicElementData extends BaseElementData {
     private final PortData[] _inputPorts;
     private final PortData[] _outputPorts;
-    private final WireData[] _inData;
-    private WireData[] _outData;
+    private final SignalData[] _inData;
+    private SignalData[] _outData;
     private final ElementAction _action;
     private boolean _outputReady = false;
 
     public LogicElementData(int input, int output, ElementAction action){
         _inputPorts = new PortData[input];
         _outputPorts = new PortData[output];
-        _inData = new WireData[input];
-        _outData = new WireData[output];
+        _inData = new SignalData[input];
+        _outData = new SignalData[output];
 
         _action = action;
 
@@ -37,6 +37,7 @@ public class LogicElementData extends BaseElementData {
 
     @Override
     public void execute() throws NotReadyException, NullConnectionException {
+        //for(var i : _outputPorts) if(!i.isConnected()) throw new NullConnectionException(this, i);
         for(int i = 0; i < _inputPorts.length; i++)
             if((_inData[i] = _inputPorts[i].getData()) == null) throw new NotReadyException();
 
@@ -44,16 +45,20 @@ public class LogicElementData extends BaseElementData {
     }
 
     @Override
-    protected WireData getDataFromPort(int index) {
+    protected SignalData getDataFromPort(int index) {
         if(!_outputReady) return null;
         return _outData[index];
     }
 
     @Override
-    public void addNextElements(AbstractCollection<BaseElementData> out) {
+    public void addNextElements(AbstractCollection<BaseElementData> out) throws NullConnectionException {
         if(_outputReady) return;
         _outputReady = true;
-        for(var i : _outputPorts) out.add(i.getConnectionBase());
+        for(var i : _outputPorts) {
+            BaseElementData cur = i.getConnectionBase();
+            if(cur == null) throw new NullConnectionException(this, i);
+            out.add(cur);
+        }
     }
 
     @Override

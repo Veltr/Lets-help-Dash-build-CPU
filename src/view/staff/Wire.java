@@ -36,6 +36,9 @@ public class Wire {
         _line.setLine(_startPoint.getWorkspaceLocation(), _endPoint.getWorkspaceLocation());
         return _line;
     }
+    public boolean isPressed(Point p){
+        return _line.getBounds().contains(p);
+    }
 
     public void setEndPoint(ConnectionPoint endPoint){
         if(!endPoint.isInput()){
@@ -51,6 +54,7 @@ public class Wire {
     public void disconnect(){
         _startPoint.setWire(null);
         _endPoint.setWire(null);
+        _startPoint.disconnect();
         _startPoint = null;
         _endPoint = null;
     }

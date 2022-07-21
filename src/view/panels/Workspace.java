@@ -1,6 +1,8 @@
 package view.panels;
 
+import model.data.BaseElementData;
 import model.data.CircuitData;
+import model.exceptions.NullConnectionException;
 import view.elements.*;
 import view.elements.input.InputElement;
 import view.staff.Wire;
@@ -84,8 +86,6 @@ class WorkspaceView extends JPanel {
         }
 
         add((JComponent)e);
-        //setPosition(e, getPreferredSize().width / 2, getPreferredSize().height / 2);
-        //setPosition(e, (getPreferredSize().width - getSize().width) / 2, (getPreferredSize().height - getSize().height) / 2);
         _circuit.add(e.getElementData());
     }
 
@@ -150,7 +150,19 @@ class WorkspaceView extends JPanel {
         }
     }
     protected void run(){
-        _circuit.start();
+        try {
+            _circuit.start();
+        }
+        catch (NullConnectionException e) {
+            BaseComponent cur;
+            for (var i : getComponents()){
+                cur = (BaseComponent) i;
+                if(cur.getElementData() == e.element){
+                    JOptionPane.showMessageDialog(cur, cur.getMessageForError(e.port));
+                    return;
+                }
+            }
+        }
         for(var i : getComponents()) if(i instanceof InputElement) ((InputElement)i).setState();
     }
     protected void clearAll(){
@@ -238,6 +250,9 @@ class WorkspaceView extends JPanel {
                 else if(point.getWire() == null) startDrag(point);
             }
             else if(_isDragging) endDrag(false);
+            else if(e.getButton() == MouseEvent.BUTTON3 && e.getSource() instanceof WorkspaceView){
+                for(var i : _wires) if(i.isPressed(e.getPoint())) i.disconnect();
+            }
         }
         @Override
         public void mouseMoved(MouseEvent e) {

@@ -1,25 +1,21 @@
+package test;
+
 import model.data.*;
 import model.exceptions.NullConnectionException;
-import view.windows.MainWindow;
+import org.junit.Assert;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.awt.*;
-
-public class Main {
-    private static void viewTest(){
-        EventQueue.invokeLater(() -> {
-            var ex = new MainWindow();
-            ex.setLocationRelativeTo(null);
-            ex.setVisible(true);
-        });
-    }
-    private static void modelTest(){
-        CircuitData circuit = new CircuitData();
-
+class CircuitDataTest {
+    private CircuitData circuit;
+    @BeforeEach
+    void setUp() {
+        circuit = new CircuitData();
 
         OutputElementData[] gens = new OutputElementData[2];
         for(int i = 0; i < gens.length; i++){
             gens[i] = new OutputElementData(1);
-
             circuit.add(gens[i]);
         }
         gens[0].setOutputData(new SignalData(BusType.B1, 1));
@@ -42,15 +38,14 @@ public class Main {
         gens[1].connect(element, 0, 1);
 
         element.connect(lamp, 0, 0);
-
-        try {
-            circuit.start();
-        } catch (NullConnectionException e) {
-            throw new RuntimeException(e);
-        }
     }
-    public static void main(String[] args) {
-        viewTest();
-        //modelTest();
+
+    @AfterEach
+    void tearDown() {
+    }
+
+    @Test
+    void start() {
+
     }
 }

@@ -1,10 +1,12 @@
 package model.data;
 
+import model.exceptions.NullConnectionException;
+
 import java.util.AbstractCollection;
 
 public class OutputElementData extends BaseElementData {
     private final PortData[] _outputPorts;
-    private WireData _outData;
+    private SignalData _outData;
 
     public OutputElementData(int output){
         _outputPorts = new PortData[output];
@@ -12,13 +14,13 @@ public class OutputElementData extends BaseElementData {
         for(int i = 0; i < output; i++) _outputPorts[i] = new PortData(BusType.B1, i, this);
     }
 
-    public void setOutputData(WireData data){
+    public void setOutputData(SignalData data){
         _outData = data;
     }
     public void setOutputData(int value){
         _outData.setValue(value);
     }
-    public WireData getOutputData(){
+    public SignalData getOutputData(){
         return _outData;
     }
 
@@ -30,16 +32,20 @@ public class OutputElementData extends BaseElementData {
     public void setPort(int index, PortData data){ setPort(index, data, true); }
 
     @Override
-    public void execute(){}
+    public void execute() {}
 
     @Override
-    protected WireData getDataFromPort(int index) {
+    protected SignalData getDataFromPort(int index) {
         return _outData;
     }
 
     @Override
-    protected void addNextElements(AbstractCollection<BaseElementData> out) {
-        for(var i : _outputPorts) out.add(i.getConnectionBase());
+    protected void addNextElements(AbstractCollection<BaseElementData> out) throws NullConnectionException {
+        for(var i : _outputPorts) {
+            BaseElementData cur = i.getConnectionBase();
+            if(cur == null) throw new NullConnectionException(this, i);
+            out.add(cur);
+        }
     }
 
     @Override

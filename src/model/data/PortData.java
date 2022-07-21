@@ -3,7 +3,7 @@ package model.data;
 import model.exceptions.NullConnectionException;
 
 public class PortData {
-    private int _index;
+    private final int _index;
     private PortData _connection;
     private BusType _type;
     private BaseElementData _base;
@@ -34,18 +34,18 @@ public class PortData {
         t.disconnect();
     }
 
-    public WireData getData() throws NullConnectionException {
+    public SignalData getData() throws NullConnectionException {
         if(_connection == null) throw new NullConnectionException(_base, this);
         return _connection.getOutputData();
     }
 
-    private WireData getOutputData(){
+    private SignalData getOutputData(){
         return _base.getDataFromPort(_index);
     }
 
     public BusType getType(){ return _type; }
     public int getIndex(){ return _index; }
-    public BaseElementData getConnectionBase(){ return _connection._base; }
+    public BaseElementData getConnectionBase(){ if(_connection == null) return null; return _connection._base; }
     protected void setAll(PortData other){
         _type = other._type;
         if(other._base != null) _base = other._base;

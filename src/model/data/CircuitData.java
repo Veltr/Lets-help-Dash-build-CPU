@@ -27,7 +27,7 @@ public class CircuitData {
         else _elements.remove(data);
     }
 
-    public void start(){
+    public void start() throws NullConnectionException {
         _bfsQueue.clear();
         _bfsQueue.addAll(_generators);
         bfs();
@@ -40,15 +40,10 @@ public class CircuitData {
         _generators.clear();
     }
 
-    private void bfs(){
+    private void bfs() throws NullConnectionException {
         while (_bfsQueue.size() > 0){
             var cur = _bfsQueue.pollFirst();
-            try { cur.execute(); }
-            catch (NullConnectionException e) {
-                System.out.println(e.getMessage());
-                return;
-            }
-            catch (NotReadyException e){
+            try { cur.execute(); } catch (NotReadyException e){
                 _bfsQueue.addLast(cur);
                 continue;
             }

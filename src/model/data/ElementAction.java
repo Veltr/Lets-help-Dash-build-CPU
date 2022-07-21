@@ -1,5 +1,5 @@
 package model.data;
 
 public interface ElementAction {
-    public WireData[] execute(WireData[] a);
+    public SignalData[] execute(SignalData[] a);
 }
