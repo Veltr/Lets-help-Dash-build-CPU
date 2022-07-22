@@ -3,7 +3,6 @@ package view.elements;
 import model.data.BaseElementData;
 import model.data.BusType;
 import model.data.PortData;
-import view.panels.Workspace;
 import view.staff.Wire;
 
 import javax.swing.*;
@@ -14,13 +13,13 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public abstract class BaseComponent extends JLabel {
+public abstract class BaseElement extends JLabel {
     protected BaseElementData _data;
     protected ArrayList<ImageIcon> _icons = new ArrayList<>();
     private final ArrayList<ConnectionPoint> _inputPorts = new ArrayList<>();
     private final ArrayList<ConnectionPoint> _outputPorts = new ArrayList<>();
 
-    public BaseComponent(){ super(); addMouseListener(new BaseComponentListener()); }
+    public BaseElement(){ super(); addMouseListener(new BaseComponentListener()); }
     public void setFixedSize(int width, int height){
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width, height));
@@ -101,7 +100,7 @@ public abstract class BaseComponent extends JLabel {
         sb.append(String.format("порт #%d не соединен", data.getIndex()));
         return sb.toString();
     }
-    public Wire connect(BaseComponent to, int outputPortIndex, int inputPortIndex) {
+    public Wire connect(BaseElement to, int outputPortIndex, int inputPortIndex) {
         _data.connect(to._data, outputPortIndex, inputPortIndex);
         Wire wire = new Wire(_outputPorts.get(outputPortIndex));
         wire.setEndPoint(to._inputPorts.get(inputPortIndex));
@@ -110,13 +109,13 @@ public abstract class BaseComponent extends JLabel {
     protected static class BaseComponentListener extends MouseAdapter {
         @Override
         public void mouseEntered(MouseEvent e) {
-            ((BaseComponent)e.getSource()).setVisibleAllPorts(true);
+            ((BaseElement)e.getSource()).setVisibleAllPorts(true);
             //System.out.println("Enter " + e.getSource());
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            ((BaseComponent)e.getSource()).setVisibleAllPorts(false);
+            ((BaseElement)e.getSource()).setVisibleAllPorts(false);
             //System.out.println("Exit  " + e.getSource());
         }
     }

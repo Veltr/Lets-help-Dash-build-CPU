@@ -76,13 +76,13 @@ public class ConnectionPoint extends JLabel implements MouseListener {
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        ((BaseComponent)((ConnectionPoint)e.getSource()).getParent()).setVisibleAllPorts(true);
+        ((BaseElement)((ConnectionPoint)e.getSource()).getParent()).setVisibleAllPorts(true);
         //System.out.println("Enter");
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        ((BaseComponent)((ConnectionPoint)e.getSource()).getParent()).setVisibleAllPorts(false);
+        ((BaseElement)((ConnectionPoint)e.getSource()).getParent()).setVisibleAllPorts(false);
         //System.out.println("Exit");
     }
     //endregion

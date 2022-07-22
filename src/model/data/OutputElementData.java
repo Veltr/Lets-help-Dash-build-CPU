@@ -18,10 +18,8 @@ public class OutputElementData extends BaseElementData {
         _outData = data;
     }
     public void setOutputData(int value){
-        _outData.setValue(value);
-    }
-    public SignalData getOutputData(){
-        return _outData;
+        if(_outData == null) _outData = new SignalData(BusType.B1, value);
+        else _outData.setValue(value);
     }
 
 

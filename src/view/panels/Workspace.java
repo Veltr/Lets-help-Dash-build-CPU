@@ -1,6 +1,5 @@
 package view.panels;
 
-import model.data.BaseElementData;
 import model.data.CircuitData;
 import model.exceptions.NullConnectionException;
 import view.elements.*;
@@ -15,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class Workspace extends JScrollPane {
-    private final WorkspaceView _view;
+    protected WorkspaceView _view;
 
     public Workspace(){
         super();
@@ -26,12 +25,12 @@ public class Workspace extends JScrollPane {
         getHorizontalScrollBar().setUnitIncrement(16);
     }
 
-    public void add(BaseComponent e) {
+    public void add(BaseElement e) {
         _view.add(e);
         Rectangle r = getViewport().getViewRect();
         setPosition(e, r.x + r.width / 2, r.y + r.height / 2);
     }
-    public void setPosition(BaseComponent e, int x, int y) { _view.setPosition(e, x, y); }
+    public void setPosition(BaseElement e, int x, int y) { _view.setPosition(e, x, y); }
     public void run(){
         _view.run();
     }
@@ -52,6 +51,7 @@ class WorkspaceView extends JPanel {
     private final CircuitData _circuit;
     private final ElementDrag _elementDrag;
     private final LineDrag _lineDrag;
+    private final DragSelect _dragSelect = new DragSelect();
 
     public WorkspaceView(){
         super();
@@ -72,9 +72,12 @@ class WorkspaceView extends JPanel {
         var m = new DragScroll();
         addMouseListener(m);
         addMouseMotionListener(m);
+
+        addMouseListener(_dragSelect);
+        addMouseMotionListener(_dragSelect);
     }
 
-    protected void add(BaseComponent e){
+    protected void add(BaseElement e){
         e.addMouseListener(_elementDrag);
         e.addMouseMotionListener(_elementDrag);
 
@@ -85,11 +88,20 @@ class WorkspaceView extends JPanel {
             i.addMouseMotionListener(_lineDrag);
         }
 
-        add((JComponent)e);
+        add((Component)e);
         _circuit.add(e.getElementData());
+        setOnTopZ(e);
     }
 
-    protected void setPosition(BaseComponent e, int x, int y){
+    protected void setOnTopZ(BaseElement e){
+        //var t = getComponents();
+        for(var i : getComponents()) {
+            if(i == e) { setComponentZOrder(e, 0); return; }
+            setComponentZOrder(i, getComponentZOrder(i) + 1);
+        }
+    }
+
+    protected void setPosition(BaseElement e, int x, int y){
         Dimension d = e.getPreferredSize();
         e.setBounds(x - d.width / 2, y - d.height / 2, d.width, d.height);
     }
@@ -101,7 +113,7 @@ class WorkspaceView extends JPanel {
             file.writeInt(getComponentCount());
             var comp = getComponents();
             for(int i = 0; i < comp.length; i++){
-                BaseComponent cur =((BaseComponent)comp[i]);
+                BaseElement cur =((BaseElement)comp[i]);
                 cur.writeToFile(file);
                 for(var ii : cur.getAllWires()){
                     if(wires.containsKey(ii)){
@@ -130,10 +142,10 @@ class WorkspaceView extends JPanel {
         try(var file = new DataInputStream(new FileInputStream(path))){
             clearAll();
             String pac = "view.elements.";
-            ArrayList<BaseComponent> comp = new ArrayList<>();
+            ArrayList<BaseElement> comp = new ArrayList<>();
             int n = file.readInt();
             for(int i = 0; i < n; i++){
-                BaseComponent cur = (BaseComponent) Class.forName(pac + file.readUTF()).getConstructor().newInstance();
+                BaseElement cur = (BaseElement) Class.forName(pac + file.readUTF()).getConstructor().newInstance();
                 add(cur);
                 cur.setBounds(new Rectangle(file.readInt(), file.readInt(), file.readInt(), file.readInt()));
                 comp.add(cur);
@@ -154,9 +166,9 @@ class WorkspaceView extends JPanel {
             _circuit.start();
         }
         catch (NullConnectionException e) {
-            BaseComponent cur;
+            BaseElement cur;
             for (var i : getComponents()){
-                cur = (BaseComponent) i;
+                cur = (BaseElement) i;
                 if(cur.getElementData() == e.element){
                     JOptionPane.showMessageDialog(cur, cur.getMessageForError(e.port));
                     return;
@@ -170,12 +182,20 @@ class WorkspaceView extends JPanel {
         _lineDrag.getWires().clear();
         removeAll();
     }
+    protected void getComponentsInRect(Rectangle rect){
+        for(var i : getComponents()){
+            if(rect.contains(i.getBounds())) {
+                ((BaseElement) i).setBorder(BorderFactory.createLineBorder(Color.blue));
+                _elementDrag._selectedElements.add(((BaseElement) i));
+            }
+        }
+    }
 
     @Override
     public void remove(Component comp) {
         super.remove(comp);
-        if(comp instanceof BaseComponent){
-            _circuit.remove(((BaseComponent)comp).getElementData());
+        if(comp instanceof BaseElement){
+            _circuit.remove(((BaseElement)comp).getElementData());
         }
     }
 
@@ -188,46 +208,72 @@ class WorkspaceView extends JPanel {
     protected void paintChildren(Graphics g) {
         super.paintChildren(g);
 
-        //for(var i : _lineDrag.getWires()) i.drawIt(g);
         _lineDrag.getWires().removeIf(cur -> !cur.drawIt(g));
+        _dragSelect.drawRect(g);
     }
 
     private static class ElementDrag extends MouseAdapter {
-        private BaseComponent _curElem;
+        private BaseElement _curElem;
+        private final ArrayList<BaseElement> _selectedElements = new ArrayList<>();
         private Point _start;
         protected Container _base;
+
+        private void clearSelected(){
+            for(var i : _selectedElements) i.setBorder(BorderFactory.createLineBorder(Color.black));
+            _selectedElements.clear();
+        }
+
+        @Override
         public void mouseClicked(MouseEvent e) {
-            if(e.getButton() == 3 && e.getSource() instanceof BaseComponent)
-                ((BaseComponent) e.getSource()).delete();
+            if(e.getButton() == 3 && e.getSource() instanceof BaseElement)
+                ((BaseElement) e.getSource()).delete();
         }
         @Override
         public void mousePressed(MouseEvent e) {
-            if(e.getSource() instanceof BaseComponent) {
-                _curElem = (BaseComponent) e.getSource();
-                _start = SwingUtilities.convertPoint(_curElem, e.getPoint(), _curElem.getParent());
+            if(e.getButton() == 1 && e.getSource() instanceof BaseElement) {
+                _curElem = (BaseElement) e.getSource();
+                if(!_selectedElements.contains(_curElem)) clearSelected();
+                _start = SwingUtilities.convertPoint(_curElem, e.getPoint(), _base);
             }
+            else if(e.getButton() == 3 && e.getSource() instanceof BaseElement)
+                ((BaseElement) e.getSource()).delete();
         }
         @Override
         public void mouseReleased(MouseEvent e) {
             _start = null;
+            _curElem = null;
         }
         @Override
         public void mouseDragged(MouseEvent e) {
-            // Point loc = SwingUtilities.convertPoint(curElem, e.getPoint(), curElem.getParent());
-            Point loc = SwingUtilities.convertPoint(_curElem, e.getPoint(), null);
-            if(_curElem.getParent().getBounds().contains(loc)){
-                loc = SwingUtilities.convertPoint(_curElem, e.getPoint(), _curElem.getParent());
-                Point newLoc = _curElem.getLocation();
-                newLoc.translate(loc.x - _start.x, loc.y - _start.y);
-                newLoc.x = Math.max(newLoc.x, 0);
-                newLoc.y = Math.max(newLoc.y, 0);
-                newLoc.x = Math.min(newLoc.x, _curElem.getParent().getWidth() - _curElem.getWidth());
-                newLoc.y = Math.min(newLoc.y, _curElem.getParent().getHeight() - _curElem.getHeight());
-                _curElem.setLocation(newLoc);
-                //_curElem.setBounds(newLoc.x, newLoc.y, _curElem.getWidth(), _curElem.getHeight());
-                _start = loc;
+            if(_curElem != null) {
+                Point loc = SwingUtilities.convertPoint(_curElem, e.getPoint(), null);
+                if (_base.getBounds().contains(loc)) {
+                    loc = SwingUtilities.convertPoint(_curElem, e.getPoint(), _base);
+                    if(_selectedElements.size() == 0) {
+                        Point newLoc = _curElem.getLocation();
+                        newLoc.translate(loc.x - _start.x, loc.y - _start.y);
+                        newLoc.x = Math.max(newLoc.x, 0);
+                        newLoc.y = Math.max(newLoc.y, 0);
+                        newLoc.x = Math.min(newLoc.x, _base.getWidth() - _curElem.getWidth());
+                        newLoc.y = Math.min(newLoc.y, _base.getHeight() - _curElem.getHeight());
+                        _curElem.setLocation(newLoc);
+                        ((WorkspaceView)_base).setOnTopZ(_curElem);
+                    }
+
+                    for(var i : _selectedElements){
+                        Point nLoc = i.getLocation();
+                        nLoc.translate(loc.x - _start.x, loc.y - _start.y);
+                        nLoc.x = Math.max(nLoc.x, 0);
+                        nLoc.y = Math.max(nLoc.y, 0);
+                        nLoc.x = Math.min(nLoc.x, _base.getWidth() - _curElem.getWidth());
+                        nLoc.y = Math.min(nLoc.y, _base.getHeight() - _curElem.getHeight());
+                        i.setLocation(nLoc);
+                        ((WorkspaceView)_base).setOnTopZ(i);
+                    }
+                    _start = loc;
+                }
+                _base.repaint();
             }
-            _base.repaint();
         }
     }
     private static class LineDrag extends MouseAdapter {
@@ -281,13 +327,15 @@ class WorkspaceView extends JPanel {
     }
     private class DragScroll extends MouseAdapter {
         private Point _origin;
+        private final int _buttonIndex = MouseEvent.BUTTON2;
         @Override
         public void mousePressed(MouseEvent e) {
-            _origin = new Point(e.getPoint());
+            if(e.getButton() == _buttonIndex) _origin = new Point(e.getPoint());
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            _origin = null;
         }
 
         @Override
@@ -304,6 +352,50 @@ class WorkspaceView extends JPanel {
 
                     scrollRectToVisible(view);
                 }
+            }
+        }
+    }
+    private class DragSelect extends MouseAdapter {
+        private Point _start;
+        private Point _end;
+        private Rectangle _curRect;
+
+        public void drawRect(Graphics g){
+            if(_start != null && _end != null){
+                g.setColor(new Color(0, 0, 165));
+                ((Graphics2D)g).setStroke(new BasicStroke(1));
+
+                _curRect = new Rectangle(Math.min(_start.x, _end.x), Math.min(_start.y, _end.y),
+                        Math.abs(_end.x - _start.x), Math.abs(_end.y - _start.y));
+                ((Graphics2D)g).draw(_curRect);
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            if(e.getButton() == 1){
+                _start = new Point(e.getPoint());
+                _elementDrag.clearSelected();
+                repaint();
+            }
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            _start = null;
+            _end = null;
+            if(_curRect != null) {
+                getComponentsInRect(_curRect);
+                _curRect = null;
+            }
+            repaint();
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            if(_start != null) {
+                _end = new Point(e.getPoint());
+                ((WorkspaceView)e.getSource()).repaint();
             }
         }
     }

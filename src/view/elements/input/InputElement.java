@@ -1,12 +1,11 @@
 package view.elements.input;
 
-import model.data.InputElementData;
-import view.elements.BaseComponent;
+import view.elements.BaseElement;
 
 import javax.swing.*;
 import java.awt.*;
 
-public abstract class InputElement extends BaseComponent {
+public abstract class InputElement extends BaseElement {
     protected int _curValue = 0;
     public InputElement() {
         super();

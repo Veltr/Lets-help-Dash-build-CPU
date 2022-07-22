@@ -1,12 +1,13 @@
 package view.windows;
 
 import io.FileSaver;
-import view.elements.BaseComponent;
+import view.elements.BaseElement;
 import view.elements.input.B1.Lamp;
 import view.elements.logic.*;
 import view.elements.output.B1.GeneratorB1;
 import view.panels.*;
 import javax.swing.*;
+import java.awt.*;
 import java.util.regex.Pattern;
 
 public class MainWindow extends JFrame {
@@ -26,13 +27,8 @@ public class MainWindow extends JFrame {
 
         _workspace = new Workspace();
         var compArea = new ComponentsArea();
-        compArea.workspace = _workspace;
 
-        var splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, _workspace, compArea);
-        splitPane.setOneTouchExpandable(true);
-        splitPane.setDividerLocation(800-296);
-
-        splitPane.setResizeWeight(1.0);
+        var splitPane = new MainSplitPane(JSplitPane.HORIZONTAL_SPLIT, _workspace, compArea);
         add(splitPane);
     }
 
@@ -66,7 +62,7 @@ public class MainWindow extends JFrame {
         _workspace.clearAll();
         changeTitle();
     }
-    private void add(BaseComponent e){
+    private void add(BaseElement e){
         _workspace.add(e);
     }
     private void changeTitle(){
