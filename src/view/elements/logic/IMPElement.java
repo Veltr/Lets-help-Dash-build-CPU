@@ -12,7 +12,7 @@ public class IMPElement extends LogicElement {
             out[0] = new SignalData(e[0].getType(), !(!a & b) ? 1 : 0);
             return out;
         });
-        getGFX("src/resources/data/IMP.dat");
+        getGFX("resources/data/IMP.dat");
         setVisibleAllPorts(false);
     }
 }

@@ -11,7 +11,7 @@ public class NOTElement extends LogicElement {
             out[0] = new SignalData(e[0].getType(), e[0].getValue() == 0 ? 1 : 0);
             return out;
         });
-        getGFX("src/resources/data/NOT.dat");
+        getGFX("resources/data/NOT.dat");
         setVisibleAllPorts(false);
     }
 }

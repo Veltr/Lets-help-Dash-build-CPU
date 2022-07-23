@@ -11,7 +11,7 @@ public class ORElement extends LogicElement {
             out[0] = new SignalData(e[0].getType(), e[0].getValue() | e[1].getValue());
             return out;
         });
-        getGFX("src/resources/data/OR.dat");
+        getGFX("resources/data/OR.dat");
         setVisibleAllPorts(false);
     }
 }

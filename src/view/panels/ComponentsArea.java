@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
 public class ComponentsArea extends JScrollPane {
     protected Workspace _workspace;
@@ -25,15 +24,15 @@ public class ComponentsArea extends JScrollPane {
         //p.setSize(300, 200);
         p.setLayout(new GridLayout(4, 2, 10, 10));
 
-        p.add(new Element(new NOTElement(), new ImageIcon("src/resources/sprites/NOT.png")));
-        p.add(new Element(new ANDElement(), new ImageIcon("src/resources/sprites/AND.png")));
-        p.add(new Element(new ORElement(), new ImageIcon("src/resources/sprites/OR.png")));
-        p.add(new Element(new XORElement(), new ImageIcon("src/resources/sprites/XOR.png")));
-        p.add(new Element(new IMPElement(), new ImageIcon("src/resources/sprites/IMP.png")));
+        p.add(new Element(new NOTElement(), new ImageIcon("resources/sprites/NOT.png")));
+        p.add(new Element(new ANDElement(), new ImageIcon("resources/sprites/AND.png")));
+        p.add(new Element(new ORElement(), new ImageIcon("resources/sprites/OR.png")));
+        p.add(new Element(new XORElement(), new ImageIcon("resources/sprites/XOR.png")));
+        p.add(new Element(new IMPElement(), new ImageIcon("resources/sprites/IMP.png")));
 
-        p.add(new Element(new GeneratorB1(), new ImageIcon("src/resources/sprites/EmptyGEN.png")));
+        p.add(new Element(new GeneratorB1(), new ImageIcon("resources/sprites/EmptyGEN.png")));
 
-        p.add(new Element(new Lamp(), new ImageIcon("src/resources/sprites/LAMP0.png")));
+        p.add(new Element(new Lamp(), new ImageIcon("resources/sprites/LAMP0.png")));
 
         setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_AS_NEEDED);
         setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);

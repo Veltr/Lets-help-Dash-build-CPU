@@ -7,7 +7,7 @@ public class Lamp extends InputElement {
     public Lamp(){
         super();
         _data = new InputElementData(1);
-        getGFX("src/resources/data/LAMP.dat");
+        getGFX("resources/data/LAMP.dat");
         setVisibleAllPorts(false);
     }
 

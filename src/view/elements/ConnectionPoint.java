@@ -18,8 +18,8 @@ public class ConnectionPoint extends JLabel implements MouseListener {
         _isInput = isInput;
 
         String path;
-        if(isInput) path = "src/resources/sprites/Input.png";
-        else path = "src/resources/sprites/Output.png";
+        if(isInput) path = "resources/sprites/Input.png";
+        else path = "resources/sprites/Output.png";
         setIcon(new ImageIcon(path));
         setFixedSize(10, 10);
 

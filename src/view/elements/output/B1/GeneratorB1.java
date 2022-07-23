@@ -13,7 +13,7 @@ public class GeneratorB1 extends OutputElement {
         super();
         _data = new OutputElementData(1);
         ((OutputElementData)_data).setOutputData(new SignalData(BusType.B1, 0));
-        getGFX("src/resources/data/GEN-B1.dat");
+        getGFX("resources/data/GEN-B1.dat");
         setVisibleAllPorts(false);
         addMouseListener(new GeneratorListener());
     }
