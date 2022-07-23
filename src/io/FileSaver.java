@@ -1,9 +1,8 @@
 package io;
 
-import view.windows.MainWindow;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.io.File;
 import java.util.regex.Pattern;
 
@@ -11,7 +10,7 @@ public class FileSaver {
     private static final String _title = "Logic builder";
     private static final String _extension = "circ";
 
-    public static String save(MainWindow window) {
+    public static String save(Container window) {
         JFileChooser ch = new JFileChooser();
         ch.setDialogTitle("Сохранение файла");
         ch.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -22,7 +21,7 @@ public class FileSaver {
             return ch.getSelectedFile().getAbsolutePath();
         return null;
     }
-    public static String load(MainWindow window) {
+    public static String load(Container window) {
         JFileChooser ch = new JFileChooser();
         ch.setDialogTitle("Загрузка файла");
         ch.setFileSelectionMode(JFileChooser.FILES_ONLY);

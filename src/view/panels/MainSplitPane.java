@@ -7,7 +7,7 @@ public class MainSplitPane extends JSplitPane {
     public MainSplitPane(int newOrientation, Workspace workspace, ComponentsArea componentsArea){
         super(newOrientation, workspace, componentsArea);
         setOneTouchExpandable(true);
-        setDividerLocation(800-300);
+        setDividerLocation(800-310);
         setResizeWeight(1.0);
         componentsArea._workspace = workspace;
         componentsArea._splitPane = this;

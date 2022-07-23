@@ -13,8 +13,6 @@ import java.util.regex.Pattern;
 public class MainWindow extends JFrame {
     private final Workspace _workspace;
     private String _curFile;
-    private final String _title = "Logic builder";
-    private final String _extension = "circ";
     public MainWindow() {
         super();
         changeTitle();

@@ -105,15 +105,18 @@ public class ComponentsArea extends JScrollPane {
         public void mouseReleased(MouseEvent e) {
             BaseElement element;
 
-            try {
-                element = (BaseElement) Class.forName(((Element) e.getSource()).obj).getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException | ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
+            //if(!_workspace.getBounds().contains(((JLabel)e.getSource()).getBounds())) {
+            if(!_base.getBounds().intersects(((JLabel)e.getSource()).getBounds())) {
+                try {
+                    element = (BaseElement) Class.forName(((Element) e.getSource()).obj).getConstructor().newInstance();
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                         NoSuchMethodException | ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+                _workspace.add(element);
+                Point p = SwingUtilities.convertPoint(_curElem, e.getPoint(), _workspace._view);
+                _workspace.setPosition(element, p.x, p.y);
             }
-            _workspace.add(element);
-            Point p = SwingUtilities.convertPoint(_curElem, e.getPoint(), _workspace._view);
-            _workspace.setPosition(element, p.x, p.y);
             _base.revalidate();
             _base.repaint();
         }

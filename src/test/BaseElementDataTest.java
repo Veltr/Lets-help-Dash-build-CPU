@@ -38,17 +38,13 @@ class BaseElementDataTest {
     }
 
     @Test
-    void execute() {
-        try {
-            for(var i : _outputs) { i.setOutputData(0); i.execute(); }
-            _logicTest.execute(); _logicTest.addNextElements(new ArrayList<>());
-            for(var i : _inputs) i.execute();
+    void execute() throws NullConnectionException, NotReadyException {
+        int outN = 0;
+        for(var i : _outputs) { i.setOutputData(outN); i.execute(); }
+        _logicTest.execute(); _logicTest.addNextElements(new ArrayList<>());
+        for(var i : _inputs) i.execute();
 
-            assertEquals(0, _inputs.get(0).getData()[0].getValue());
-            assertEquals(1, _inputs.get(1).getData()[0].getValue());
-
-        } catch (NotReadyException | NullConnectionException e) {
-            throw new RuntimeException(e);
-        }
+        assertEquals(outN, _inputs.get(0).getData()[0].getValue());
+        assertEquals(outN == 0 ? 1 : 0, _inputs.get(1).getData()[0].getValue());
     }
 }

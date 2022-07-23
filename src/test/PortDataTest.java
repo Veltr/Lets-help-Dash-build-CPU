@@ -28,7 +28,8 @@ class PortDataTest {
     @Test
     void getData() throws NullConnectionException {
         _output.connect(_input, 0, 0);
-        _output.setOutputData(1);
-        assertEquals(1, _input.getPortData(0, true).getData().getValue());
+        int outN = 1;
+        _output.setOutputData(outN);
+        assertEquals(outN, _input.getPortData(0, true).getData().getValue());
     }
 }

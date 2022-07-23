@@ -110,6 +110,9 @@ class WorkspaceView extends JPanel {
         try(var file = new DataOutputStream(new FileOutputStream(path))){
             HashMap<Wire, Point> wires = new HashMap<>();
 
+            Point p = ((JViewport)getParent()).getViewPosition();
+            file.writeInt(p.x);file.writeInt(p.y);
+
             file.writeInt(getComponentCount());
             var comp = getComponents();
             for(int i = 0; i < comp.length; i++){
@@ -143,6 +146,9 @@ class WorkspaceView extends JPanel {
             clearAll();
             String pac = "view.elements.";
             ArrayList<BaseElement> comp = new ArrayList<>();
+
+            ((JViewport)getParent()).setViewPosition(new Point(file.readInt(), file.readInt()));
+
             int n = file.readInt();
             for(int i = 0; i < n; i++){
                 BaseElement cur = (BaseElement) Class.forName(pac + file.readUTF()).getConstructor().newInstance();
@@ -184,7 +190,7 @@ class WorkspaceView extends JPanel {
     }
     protected void getComponentsInRect(Rectangle rect){
         for(var i : getComponents()){
-            if(rect.contains(i.getBounds())) {
+            if(rect.intersects(i.getBounds())) {
                 ((BaseElement) i).setBorder(BorderFactory.createLineBorder(Color.blue));
                 _elementDrag._selectedElements.add(((BaseElement) i));
             }
@@ -225,8 +231,12 @@ class WorkspaceView extends JPanel {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if(e.getButton() == 3 && e.getSource() instanceof BaseElement)
-                ((BaseElement) e.getSource()).delete();
+            if(e.getButton() == 3 && e.getSource() instanceof BaseElement) {
+                if(_selectedElements.contains((BaseElement)e.getSource())){
+                    for(var i : _selectedElements) i.delete();
+                }
+                else ((BaseElement) e.getSource()).delete();
+            }
         }
         @Override
         public void mousePressed(MouseEvent e) {
@@ -235,8 +245,8 @@ class WorkspaceView extends JPanel {
                 if(!_selectedElements.contains(_curElem)) clearSelected();
                 _start = SwingUtilities.convertPoint(_curElem, e.getPoint(), _base);
             }
-            else if(e.getButton() == 3 && e.getSource() instanceof BaseElement)
-                ((BaseElement) e.getSource()).delete();
+            /*else if(e.getButton() == 3 && e.getSource() instanceof BaseElement)
+                ((BaseElement) e.getSource()).delete();*/
         }
         @Override
         public void mouseReleased(MouseEvent e) {
@@ -359,15 +369,18 @@ class WorkspaceView extends JPanel {
         private Point _start;
         private Point _end;
         private Rectangle _curRect;
+        private final Color _color = new Color(0, 81, 255, 50);
+        private final BasicStroke _stroke = new BasicStroke(2);
 
         public void drawRect(Graphics g){
             if(_start != null && _end != null){
-                g.setColor(new Color(0, 0, 165));
-                ((Graphics2D)g).setStroke(new BasicStroke(1));
+                g.setColor(_color);
+                ((Graphics2D)g).setStroke(_stroke);
 
                 _curRect = new Rectangle(Math.min(_start.x, _end.x), Math.min(_start.y, _end.y),
                         Math.abs(_end.x - _start.x), Math.abs(_end.y - _start.y));
                 ((Graphics2D)g).draw(_curRect);
+                ((Graphics2D)g).fill(_curRect);
             }
         }
 
